@@ -5,6 +5,7 @@
 
 ## Notes for next session
 - [ ] Test it on a more generalized model
+- [ ] Try to train 1 classifier in general, __instead of 1 classifier per class__ 
 - [ ] Implement the same attack without supplying attacker with the proba-vector
 - [ ] Try attack when some features are missing
 - [ ] Further investigate data-synthesis algorithm
