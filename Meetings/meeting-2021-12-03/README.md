@@ -6,8 +6,8 @@
 - We displayed the basic __label-only__ attack based on perturbation and test-train data behaviour on boundary attacks.
 
 ## TODO's
-- [ ] Apply the perturbations in the target's training dataset and retry attack
-- [ ] __In given attack__ check if training or test data are more label-sensitive, when perturbed
+- [x] Apply the perturbations in the target's training dataset and retry attack
+- [x] __In given attack__ check if training or test data are more label-sensitive, when perturbed
 - [ ] Interesting direction: "_Can we tune the perturbations properly, in order ot achieve max attack accuracy_". This might be done in GAN style.
 - [ ] Try the same attack in a state of the art model and display if vulnerable
 - [ ] Perform better label balancing in the attack dataset in order to achieve best model performance (**DO IN BOTH CONF-VEC AND LABEL-ONLY ATTACK TO COMPARE RESULTS.**
