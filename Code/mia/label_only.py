@@ -54,6 +54,8 @@ def augmented_queries(model, X, y_pred, r=3, d=1):
 
 class LabelOnlyAttackModel(DefaultAttackModel):
     def __init__(self, shadow_batch, n_classes, X_inpt_dim, _optimizer):
+        self.r = 2
+        self.d = 1
         super(LabelOnlyAttackModel, self).__init__(shadow_batch, n_classes, X_inpt_dim, _optimizer)
 
     # helper to prepare a batch of shadow data into a batch of attack data
