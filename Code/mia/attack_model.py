@@ -9,11 +9,11 @@ class DefaultAttackModel():
     def __init__(self, shadow_batch, n_classes, X_inpt_dim, _optimizer):
         # default structure as Shokri et al. suggested
         self.model = models.Sequential()
-        self.add(layers.Dense(10, input_shape=(X_inpt_dim,)))
-        self.add(layers.LeakyReLU(0.5))
-        self.add(layers.Dense(1, activation='sigmoid'))
+        self.model.add(layers.Dense(10, input_shape=X_inpt_dim))
+        self.model.add(layers.LeakyReLU(0.5))
+        self.model.add(layers.Dense(1, activation='sigmoid'))
         
-        self.compile(optimizer=_optimizer,
+        self.model.compile(optimizer=_optimizer,
                     loss='binary_crossentropy',
                     metrics=['accuracy'])
         
@@ -55,27 +55,37 @@ class DefaultAttackModel():
             print("Done!")
         return D_attack 
 
-    def fit(self, *fit_args):
+    def fit(self, epochs=100):
         # first generate the attack dataset
         self.attack_dataset = self.generate_attack_dataset()
         X, y = self.attack_dataset[:, :-1], self.attack_dataset[:, -1]
         X_train, X_test, y_train, y_test = train_test_split(X, y, shuffle=True, test_size=0.3)
 
         # fit the model
-        self.history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), *fit_args)
+        self.history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs)
         
         return self.history
     
     def predict(self, X):
         return self.model.predict(X)
-        
-    def evaluate(self, X, y):
+    
+
+    def per_class_acc(self, X_attack, y_attack, n_classes):
+      for c in range(n_classes):
+        class_instances = X_attack[:, 0] == c # get same class samples
+        test_loss, test_acc = self.model.evaluate(X_attack[class_instances, :], y_attack[class_instances], verbose=0)
+        print(f"class-{c+1} acc: {test_acc}")
+
+    def evaluate(self, X, y, verbose=0):
         """
         Print:
+        - per class accuracy
         - classification report
-        - ROC-Curve, 
-        - Tensorflow classification report.
+        - ROC-Curve
         """
+
+        self.per_class_acc(X, y, self.n_classes)
+
         y_pred_proba = self.predict(X)
         y_pred = y_pred_proba > 0.5
         
@@ -84,7 +94,4 @@ class DefaultAttackModel():
         # ROC-Curve
         fpr, tpr, _ = roc_curve(y, y_pred_proba)
         plt.plot(fpr, tpr)
-        plt.legend(f"AUC: {roc_auc_score(y, y_pred_proba)}")
-
-
-        print(self.model.evaluate(X, y, batch_size=512))
+        print(f"AUC: {roc_auc_score(y, y_pred_proba)}")

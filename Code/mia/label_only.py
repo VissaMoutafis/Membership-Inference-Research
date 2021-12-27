@@ -3,7 +3,7 @@
 # ~Written by Vissarion Moutafis~ for Undergraduate Thesis
 import numpy as np
 from mia.attack_model import DefaultAttackModel
-from utilities import create_rotates, create_translates, apply_augment
+from mia.utilities import create_rotates, create_translates, apply_augment
 from tensorflow.keras import layers
 
 # API of model to get predictions : returns labels only
@@ -73,8 +73,8 @@ class LabelOnlyAttackModel(DefaultAttackModel):
         # return an instance <actual class, predicted class, perturbed_queries_res from shadow models, 'in'/'out' D_target membership> 
         return np.concatenate((y.reshape(-1, 1), y_pred, perturbed_queries_res, y_member), axis=1)
     
-    def fit(self, r=2, d=1, *fit_args):
+    def fit(self, r=2, d=1, epochs=100):
         #set up r, d before fit
         self.r = r
         self.d = d
-        super(LabelOnlyAttackModel, self).fit(*fit_args)
+        super(LabelOnlyAttackModel, self).fit(epochs=epochs)

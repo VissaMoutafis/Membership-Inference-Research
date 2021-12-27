@@ -4,7 +4,7 @@
 from sklearn.metrics import classification_report, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split
 
-class Shadow_Model_Batch():
+class ShadowModelBatch():
     # param n_shadows: num of shadow models
     # param shadow_creator: function to create a shadow dataset
     def __init__(self, n_shadows, shadow_creator):
@@ -12,12 +12,14 @@ class Shadow_Model_Batch():
         self.n_shadows = n_shadows
         # dataset in form of (X_train, y_train), (X_test, y_test)
         self.D_shadow = []
+        self.history = []
 
-    def fit_all(self, shadow_Xs, shadow_ys, *fit_args):
+    # param D_shadows: list of D_shadow_i = (X, y)
+    def fit_all(self, D_shadows, epochs=50):
 
-        for i in self.shadow_models:
-            X_train, X_test, y_train, y_test = train_test_split(shadow_Xs[i], shadow_ys[i], shuffle=True, test_size=0.33)
-            self.history[i] = self.shadow_models[i].fit(X_train, y_train, validation_data=(X_test, y_test), *fit_args)
+        for i in range(self.n_shadows):
+            X_train, X_test, y_train, y_test = train_test_split(D_shadows[i][0], D_shadows[i][1], shuffle=True, test_size=0.33)
+            self.history.append(self.shadow_models[i].fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs))
             D_shadow_i = (X_train, y_train), (X_test, y_test)
             self.D_shadow.append(D_shadow_i)
 
@@ -28,7 +30,7 @@ class Shadow_Model_Batch():
 
     def __next__(self):
         item = None
-        if self.n <= self.n_shadows:
+        if self.n < self.n_shadows:
             item = self.shadow_models[self.n], self.D_shadow[self.n]
             self.n += 1
         else:
