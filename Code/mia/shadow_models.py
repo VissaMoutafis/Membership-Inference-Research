@@ -5,6 +5,7 @@ from sklearn.metrics import classification_report, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split
 
 class ShadowModelBatch():
+    VERBOSE = False
     # param n_shadows: num of shadow models
     # param shadow_creator: function to create a shadow dataset
     def __init__(self, n_shadows, shadow_creator):
@@ -19,7 +20,7 @@ class ShadowModelBatch():
 
         for i in range(self.n_shadows):
             X_train, X_test, y_train, y_test = train_test_split(D_shadows[i][0], D_shadows[i][1], shuffle=True, test_size=0.33)
-            self.history.append(self.shadow_models[i].fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs))
+            self.history.append(self.shadow_models[i].fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, verbose=self.VERBOSE))
             D_shadow_i = (X_train, y_train), (X_test, y_test)
             self.D_shadow.append(D_shadow_i)
 

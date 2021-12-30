@@ -6,10 +6,11 @@ import matplotlib.pyplot as plt
 
 
 class DefaultAttackModel():
-    def __init__(self, shadow_batch, n_classes, X_inpt_dim, _optimizer):
+    VERBOSE=False
+    def __init__(self, shadow_batch, n_classes, X_attack_dim, _optimizer):
         # default structure as Shokri et al. suggested
         self.model = models.Sequential()
-        self.model.add(layers.Dense(10, input_shape=X_inpt_dim))
+        self.model.add(layers.Dense(10, input_shape=X_attack_dim))
         self.model.add(layers.LeakyReLU(0.5))
         self.model.add(layers.Dense(1, activation='sigmoid'))
         
@@ -62,7 +63,7 @@ class DefaultAttackModel():
         X_train, X_test, y_train, y_test = train_test_split(X, y, shuffle=True, test_size=0.3)
 
         # fit the model
-        self.history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs)
+        self.history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, verbose=self.VERBOSE)
         
         return self.history
     

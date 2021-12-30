@@ -15,7 +15,7 @@ def divide_dataset(n_splits, dataset_size, X, y):
             range(X.shape[0]), dataset_size, replace=False)
         # sanity check for replace usage (might delete later)
         assert np.unique(sample_i).shape[0] == dataset_size
-        D_splits.append((X[sample_i, :], y[sample_i, :]))
+        D_splits.append((X[sample_i], y[sample_i]))
     return D_splits
 
 # returns a list of 'n_shadows' datasets
