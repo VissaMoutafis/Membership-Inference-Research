@@ -11,7 +11,7 @@ class DefaultAttackModel():
         # default structure as Shokri et al. suggested
         self.model = models.Sequential()
         self.model.add(layers.Dense(10, input_shape=X_attack_dim))
-        self.model.add(layers.LeakyReLU(0.5))
+        self.model.add(layers.LeakyReLU(0.3))
         self.model.add(layers.Dense(1, activation='sigmoid'))
         
         self.model.compile(optimizer=_optimizer,
@@ -30,13 +30,11 @@ class DefaultAttackModel():
     def prepare_batch(self, model, X, y, in_D):
         # decide membership
         y_member = np.ones(shape=(y.shape[0], 1)) if in_D else np.zeros(shape=(y.shape[0], 1))
-
-        # get the y_pred 
         prob = layers.Softmax()
-        ret = prob(model.predict(X)).numpy()
+        ret = prob(model.predict(X)).numpy().reshape((-1,self.n_classes))
         
         # return an instance <true label, confidence vector, 0/1 D_target membership> 
-        return np.concatenate((y.reshape(-1, 1), ret, y_member), axis=1)
+        return np.concatenate((y.reshape((-1, 1)), ret, y_member), axis=1)
 
     # helper function to generate the attack dataset from the previously given shadow models batch
     def generate_attack_dataset(self):
