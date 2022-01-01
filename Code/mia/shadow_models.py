@@ -6,8 +6,11 @@ from sklearn.model_selection import train_test_split
 
 class ShadowModelBatch():
     VERBOSE = False
-    # param n_shadows: num of shadow models
-    # param shadow_creator: function to create a shadow dataset
+    """
+    Shadow model bundle wrapper
+    @param n_shadows: num of shadow models
+    @param shadow_creator: function to create a shadow models
+    """
     def __init__(self, n_shadows, shadow_creator):
         self.shadow_models = [shadow_creator() for _ in range(n_shadows)]
         self.n_shadows = n_shadows
@@ -15,7 +18,11 @@ class ShadowModelBatch():
         self.D_shadow = []
         self.history = []
 
-    # param D_shadows: list of D_shadow_i = (X, y)
+    """
+    Train all shadow models, given each one's dataset.
+    @param D_shadows: list of D_shadow_i = (X, y)
+    @param epochs: epochs of training for each shadow model
+    """
     def fit_all(self, D_shadows, epochs=50):
 
         for i in range(self.n_shadows):
@@ -24,7 +31,7 @@ class ShadowModelBatch():
             D_shadow_i = (X_train, y_train), (X_test, y_test)
             self.D_shadow.append(D_shadow_i)
 
-    # param i: idx of the i-th shadow model
+    # for iteration usage
     def __iter__(self):
         self.n = 0
         return self 

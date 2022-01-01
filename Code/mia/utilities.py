@@ -3,11 +3,12 @@ import numpy as np
 import scipy.ndimage.interpolation as interpolation
 import matplotlib.pyplot as plt
 
-# Divide a given dataset (X, y) according to the number of splits and the size of each D_i given.
-# param n_splits: number of splits
-# dataset_size: number of instances in each generated datasets
-
-
+"""
+Divide a given dataset (X, y) according to the number of splits and the size of each D_i given.
+@param n_splits: number of splits
+@param dataset_size: number of instances in each generated datasets
+@param X, y: dataset to split
+"""
 def divide_dataset(n_splits, dataset_size, X, y):
     D_splits = []
     for i in range(n_splits):
@@ -18,14 +19,14 @@ def divide_dataset(n_splits, dataset_size, X, y):
         D_splits.append((X[sample_i], y[sample_i]))
     return D_splits
 
-# returns a list of 'n_shadows' datasets
-# param target_model: the model to attack (useless currently)
-# param n_shadows: number of shadow models
-# param: shadow_dataset_size: size of dataset for each D_shadow
-# n_classes: labels (useless currently)
-# attacker_X, attacker_y: attacker's provided dataset, to split among the shadows
-
-
+"""
+Returns a list of 'n_shadows' datasets
+@param target_model: the model to attack (useless currently)
+@param n_shadows: number of shadow models
+@param: shadow_dataset_size: size of dataset for each D_shadow
+@param n_classes: labels (useless currently)
+@param attacker_X, attacker_y: attacker's provided dataset, to split among the shadows
+"""
 def generate_shadow_dataset(target_model, n_shadows, shadow_dataset_size, n_classes, attacker_X=None, attacker_y=None):
     # in case we give test data we will just divide those to train the shadow models
     if attacker_X is not None and attacker_y is not None:
@@ -43,8 +44,6 @@ def create_rotates(r):
     return rotates
 
 # create all possible translates (returns 4*d+1 translates)
-
-
 def create_translates(d):
     if d is None:
         return None
@@ -83,12 +82,14 @@ def apply_augment(d, augment, type_):
         raise ValueError(f'Augmentation Type: \'{type_}\' doesn\'t exist. Try \'r\' or \'d\'')
     return d
 
-# Method to augment a given dataset
-# param model the model to query
-# param X the input to perurb
-# param y is the labels of given input
-# param r : rotations angles
-# param d : translates
+"""
+Method to augment a given dataset
+@param model: model to query
+@param X: input to perurb
+@param y: labels of given input
+@param r : rotations angles
+@param d : translates
+"""
 def augment_dataset(X, y, r=2, d=1):
     # create perturbations
     rotates = create_rotates(r)

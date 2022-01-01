@@ -4,11 +4,24 @@ from mia.label_only import LabelOnlyAttackModel
 from mia.utilities import *
 from mia.shadow_models import ShadowModelBatch
 
-
 class MIAWrapper():
     ATTACK_MODEL_OPTIMIZER = 'adam'
     ATTACK_MODEL_EPOCHS = 100
 
+    """
+    Wrapper for MIA framework.
+    @param target_model: the model to perform attack to.
+    @param target_dataset: the target's training dataset
+    @param attacker_dataset: the dataset that attacker has access to. Will be used in shadow models training
+    @param shadow_creator: function to return a shadow model
+    @param n_shadows: number of shadow models
+    @param D_shadow_size: size of D_shadow_i for every shadow model
+    @param verbose: verbosity meter
+    
+    GLOBAL:
+    @param ATTACK_MODEL_OPTIMIZER: optimizer for attack model. Defaults to 'adam'
+    @param ATTACK_MODEL_EPOCHS: epochs fo training for attack model. Defaults to 100
+    """
     def __init__(self, target_model, target_dataset, attacker_dataset, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
         """
         param target_model: fitted target model
@@ -19,6 +32,8 @@ class MIAWrapper():
         param D_shadow_size: # of instances in each D_shadow_i
         param verbose: verbosity during attack phases 
         """
+        DefaultAttackModel.VERBOSE = verbose
+        ShadowModelBatch.VERBOSE = verbose 
         # set up variables
         self.target_model = target_model
         self.target_dataset = target_dataset
@@ -33,11 +48,21 @@ class MIAWrapper():
         self.trained = False
         self.shadow_model_bundle = None
 
+    """
+    Create shadow models batch. Fit all models.
+    Warning: called inside the wrapper, not for outside usage. 
+    """
     def create_shadows(self):
         shadow_models_batch = ShadowModelBatch(self.n_shadows, self.shadow_creator) # shadow model list
         shadow_models_batch.fit_all(self.D_shadows, epochs=25)
         return shadow_models_batch # return a list where every item is (model, acc), train-data, test-data
 
+    """
+    Attack evaluation based on given datasets
+    @param D_in_sample_size: num of samples from D_in. Default is min (D_in_sample_size, D_out_sample_size)
+    @param D_out_sample_size: num of samples from D_attacker (any instances out of D_in will do). Default is min (D_in_sample_size, D_out_sample_size)
+    """
+    
     def evaluate_attack(self, D_in_sample_size=None, D_out_sample_size=None):
         if D_in_sample_size is None:
             D_in_sample_size = min(self.target_dataset[0].shape[0], self.attacker_dataset[0].shape[0])
@@ -51,9 +76,22 @@ class MIAWrapper():
 
 
 class ConfidenceVectorAttack(MIAWrapper):
+    """
+    Wrapper for confidence vector MIA.
+    @param target_model: the model to perform attack to.
+    @param target_dataset: the target's training dataset
+    @param attacker_dataset: the dataset that attacker has access to. Will be used in shadow models training
+    @param shadow_creator: function to return a shadow model
+    @param n_shadows: number of shadow models
+    @param D_shadow_size: size of D_shadow_i for every shadow model
+    @param verbose: verbosity meter
+    """
     def __init__(self, target_model, target_dataset, attacker_dataset, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
         super(ConfidenceVectorAttack, self).__init__(target_model, target_dataset, attacker_dataset, shadow_creator, n_shadows, D_shadow_size, verbose)
 
+    """
+    Generate shadow dataset, create and train shadows, generate attack model dataset, create and train attack model.
+    """
     def perform_attack(self):
         self.trained = True 
         # generate shadow datasets
@@ -69,11 +107,25 @@ class ConfidenceVectorAttack(MIAWrapper):
         
         
 class LabelOnlyAttack(MIAWrapper):
+    """
+    Wrapper for confidence vector MIA.
+    @param target_model: the model to perform attack to.
+    @param target_dataset: the target's training dataset
+    @param attacker_dataset: the dataset that attacker has access to. Will be used in shadow models training
+    @param rotates: number of rotations (create 2*r rotates)
+    @param translats: number of translates (create 4*d translates)
+    @param shadow_creator: function to return a shadow model
+    @param n_shadows: number of shadow models
+    @param D_shadow_size: size of D_shadow_i for every shadow model
+    @param verbose: verbosity meter
+    """
     def __init__(self, target_model, target_dataset, attacker_dataset, rotates=3, translates=1, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
         super(LabelOnlyAttack, self).__init__(target_model, target_dataset, attacker_dataset, shadow_creator, n_shadows, D_shadow_size, verbose)
         self.r = rotates
         self.d = translates 
-        
+    """
+    Generate shadow dataset, create and train shadows, generate attack model dataset (instances of <y_true, shadow_i(x), shadow_i(aug(x))> ), create and train attack model.
+    """
     def perform_attack(self):
         self.trained = True 
         # generate shadow datasets

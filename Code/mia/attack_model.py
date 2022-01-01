@@ -7,6 +7,13 @@ import matplotlib.pyplot as plt
 
 class DefaultAttackModel():
     VERBOSE=False
+    """
+    Default attack model for confidence vector attack
+    @param shadow_batch: A ShadowModelBatch object with trained models that will be used as target imitators to execute attack
+    @param n_classes: the number of classes in the classification models output
+    @param X_attack_dim: the dimensions of the attack dataset's instances (i.e. in confidence vector we use (n_classes,))
+    @param _optimizer: optimizer to use in attack-model fitting
+    """
     def __init__(self, shadow_batch, n_classes, X_attack_dim, _optimizer):
         # default structure as Shokri et al. suggested
         self.model = models.Sequential()
@@ -23,10 +30,14 @@ class DefaultAttackModel():
         self.attack_dataset = []
         self.history = None
     
-    # helper to prepare a batch of shadow data into a batch of attack data
-    # param model: the model to which we relate the data 
-    # param X, y: instances and their true labels
-    # param in_D: boolean-> True if data are in the model's training dataset, otherwise False
+    """
+    helper to prepare a batch of shadow data into a batch of attack data
+    Can be called to create a test-dataset for the model, outside the model.
+    @param model: the model to which we relate the data 
+    @param X, y: instances and their true labels
+    @param in_D: boolean-> True if data are in the model's training dataset, otherwise False
+    
+    """
     def prepare_batch(self, model, X, y, in_D):
         # decide membership
         y_member = np.ones(shape=(y.shape[0], 1)) if in_D else np.zeros(shape=(y.shape[0], 1))
@@ -36,7 +47,10 @@ class DefaultAttackModel():
         # return an instance <true label, confidence vector, 0/1 D_target membership> 
         return np.concatenate((y.reshape((-1, 1)), ret, y_member), axis=1)
 
-    # helper function to generate the attack dataset from the previously given shadow models batch
+    """ 
+    helper function to generate the attack dataset from the previously given shadow models batch
+    Warning: only called from inside the model.
+    """
     def generate_attack_dataset(self):
         # input is a list where items are model, (X_train, y_train), (X_test, y_test)
 
@@ -54,6 +68,10 @@ class DefaultAttackModel():
             print("Done!")
         return D_attack 
 
+
+    """
+    Classic fit loop that trains the model based on the shadow batch we provided at the constructor
+    """
     def fit(self, epochs=100):
         # first generate the attack dataset
         self.attack_dataset = self.generate_attack_dataset()
@@ -65,23 +83,29 @@ class DefaultAttackModel():
         
         return self.history
     
+    """Simple predict function. Returns logits"""
     def predict(self, X):
         return self.model.predict(X)
     
-
+    """ 
+    Only called from the self.evaluate function to evaluate per class accuracy of attack 
+    """
     def per_class_acc(self, X_attack, y_attack, n_classes):
       for c in range(n_classes):
         class_instances = X_attack[:, 0] == c # get same class samples
         test_loss, test_acc = self.model.evaluate(X_attack[class_instances, :], y_attack[class_instances], verbose=0)
         print(f"class-{c+1} acc: {test_acc}")
 
-    def evaluate(self, X, y, verbose=0):
-        """
-        Print:
+    """
+    Evaluate attack based on X, y (use preppare_batch to create them).
+        Evaluation will print:
         - per class accuracy
         - classification report
         - ROC-Curve
-        """
+        - AUC-Score
+    """
+    def evaluate(self, X, y, verbose=0):
+        
 
         self.per_class_acc(X, y, self.n_classes)
 
