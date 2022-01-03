@@ -10,7 +10,7 @@
 - [x] __In given attack__ check if training or test data are more label-sensitive, when perturbed
 - [ ] Interesting direction: "_Can we tune the perturbations properly, in order ot achieve max attack accuracy_". This might be done in GAN style.
   (**Experimental Note (01/01/2022)**) Testing the 2 attacks seems that the target model behaviour won't really change, so the tuning is more of a try-fail routine where the more perturbations we apply the more we beat the target's "defence mechanism"
-- [ ] Try the same attack in a state of the art model and display if vulnerable (Optional)
+- [ ] Try the same attack in a defended model and display if vulnerable (Optional)
 - [x] Perform better label balancing in the attack dataset in order to achieve best model performance (**DO IN BOTH CONF-VEC AND LABEL-ONLY ATTACK TO COMPARE RESULTS.**
 
 ## Important NOTEs
