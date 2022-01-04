@@ -17,7 +17,7 @@ class DefaultAttackModel():
     def __init__(self, shadow_batch, n_classes, X_attack_dim, _optimizer):
         # default structure as Shokri et al. suggested
         self.model = models.Sequential()
-        self.model.add(layers.Dense(10, input_shape=X_attack_dim))
+        self.model.add(layers.Dense(n_classes, input_shape=X_attack_dim))
         self.model.add(layers.LeakyReLU(0.3))
         self.model.add(layers.Dense(1, activation='sigmoid'))
         
