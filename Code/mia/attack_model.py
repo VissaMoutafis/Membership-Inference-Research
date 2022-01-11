@@ -4,7 +4,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, roc_curve, roc_auc_score
 import matplotlib.pyplot as plt
 
-
 class DefaultAttackModel():
     VERBOSE=False
     """
@@ -14,16 +13,9 @@ class DefaultAttackModel():
     @param X_attack_dim: the dimensions of the attack dataset's instances (i.e. in confidence vector we use (n_classes,))
     @param _optimizer: optimizer to use in attack-model fitting
     """
-    def __init__(self, shadow_batch, n_classes, X_attack_dim, _optimizer):
+    def __init__(self, shadow_batch, n_classes, f_attack_builder):
         # default structure as Shokri et al. suggested
-        self.model = models.Sequential()
-        self.model.add(layers.Dense(n_classes, input_shape=X_attack_dim))
-        self.model.add(layers.LeakyReLU(0.3))
-        self.model.add(layers.Dense(1, activation='sigmoid'))
-        
-        self.model.compile(optimizer=_optimizer,
-                    loss='binary_crossentropy',
-                    metrics=['accuracy'])
+        self.model = f_attack_builder()
         
         self.shadow_models_batch = shadow_batch 
         self.n_classes = n_classes 
@@ -79,8 +71,11 @@ class DefaultAttackModel():
         X_train, X_test, y_train, y_test = train_test_split(X, y, shuffle=True, test_size=0.3)
 
         # fit the model
-        self.history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, verbose=self.VERBOSE)
-        
+        try:
+            self.history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, verbose=self.VERBOSE)
+        except:
+            self.model.fit(X_train, y_train)
+            
         return self.history
     
     """Simple predict function. Returns logits"""
@@ -93,7 +88,6 @@ class DefaultAttackModel():
     def per_class_acc(self, X_attack, y_attack, n_classes):
       for c in range(n_classes):
         class_instances = X_attack[:, 0] == c # get same class samples
-        print(X_attack[class_instances, :].shape, y_attack[class_instances].shape)
         test_loss, test_acc = self.model.evaluate(X_attack[class_instances, :], y_attack[class_instances], verbose=0)
         print(f"class-{c+1} acc: {test_acc}")
 
@@ -107,15 +101,25 @@ class DefaultAttackModel():
     """
     def evaluate(self, X, y, verbose=0):
         
-
-        self.per_class_acc(X, y, self.n_classes)
-
+        try:
+            self.per_class_acc(X, y, self.n_classes)
+        except:
+            print("Warning: AttackModel has no attribute evaluate")
+            
         y_pred_proba = self.predict(X)
-        y_pred = y_pred_proba > 0.5
-        
+        try:
+            y_pred = np.argmax(y_pred_proba, axis=1)
+        except:
+            y_pred = y_pred_proba > 0.5
+            
         print(classification_report(y.reshape(-1), y_pred.reshape(-1)))
         
         # ROC-Curve
-        fpr, tpr, _ = roc_curve(y, y_pred_proba)
-        plt.plot(fpr, tpr)
-        print(f"AUC: {roc_auc_score(y, y_pred_proba)}")
+        try:
+            fpr, tpr, _ = roc_curve(y, y_pred_proba)
+            plt.plot(fpr, tpr)
+            print(f"AUC: {roc_auc_score(y, y_pred_proba)}")
+        except:
+            fpr, tpr, _ = roc_curve(y, y_pred_proba[y_pred_proba > 0.5])
+            plt.plot(fpr, tpr)
+            print(f"AUC: {roc_auc_score(y, y_pred_proba[y_pred_proba > 0.5])}")

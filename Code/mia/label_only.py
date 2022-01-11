@@ -65,10 +65,10 @@ class LabelOnlyAttackModel(DefaultAttackModel):
     @param X_attack_dim: the dimensions of the attack dataset's instances (i.e. in confidence vector we use (n_classes,))
     @param _optimizer: optimizer to use in attack-model fitting
     """
-    def __init__(self, shadow_batch, n_classes, X_inpt_dim, _optimizer):
+    def __init__(self, shadow_batch, n_classes, f_attack_builder):
         self.r = 2 # default values
         self.d = 1 #default values
-        super(LabelOnlyAttackModel, self).__init__(shadow_batch, n_classes, X_inpt_dim, _optimizer)
+        super(LabelOnlyAttackModel, self).__init__(shadow_batch, n_classes, f_attack_builder)
 
     """
     helper to prepare a batch of shadow data into a batch of attack data

@@ -2,6 +2,7 @@ import math
 import numpy as np
 import scipy.ndimage.interpolation as interpolation
 import matplotlib.pyplot as plt
+from tensorflow.keras import models, layers
 
 """
 Divide a given dataset (X, y) according to the number of splits and the size of each D_i given.
@@ -114,3 +115,15 @@ def augment_dataset(X, y, r=2, d=1):
             X_aug = np.concatenate((X_aug, X_perturbed))
             
     return X_aug, y_aug
+
+
+def cifar_10_f_attack_builder():
+    model = models.Sequential()
+    model.add(layers.Dense(10, input_shape=(11, 1)))
+    model.add(layers.LeakyReLU(0.3))
+    model.add(layers.Dense(1, activation='sigmoid'))
+        
+    model.compile(optimizer='adam',
+                    loss='binary_crossentropy',
+                    metrics=['accuracy'])
+    return model 

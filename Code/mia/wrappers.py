@@ -1,5 +1,5 @@
 import numpy as np
-from mia.attack_model import DefaultAttackModel
+from mia.attack_model import *
 from mia.label_only import LabelOnlyAttackModel
 from mia.utilities import *
 from mia.shadow_models import ShadowModelBatch
@@ -22,22 +22,13 @@ class MIAWrapper():
     @param ATTACK_MODEL_OPTIMIZER: optimizer for attack model. Defaults to 'adam'
     @param ATTACK_MODEL_EPOCHS: epochs fo training for attack model. Defaults to 100
     """
-    def __init__(self, target_model, target_dataset, attacker_dataset, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
-        """
-        param target_model: fitted target model
-        param tartet_dataset: target's train dataset, in tuple format (X_train, y_train)
-        param attacker_dataset: dataset the attacker uses to train shadows, in tuple format (X_train, y_train)
-        param shadow_creator: function to return a compiled model used as shadow creator
-        param n_shadows: # of shadow models
-        param D_shadow_size: # of instances in each D_shadow_i
-        param verbose: verbosity during attack phases 
-        """
+    def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
         DefaultAttackModel.VERBOSE = verbose
         ShadowModelBatch.VERBOSE = verbose 
         # set up variables
         self.target_model = target_model
         self.target_dataset = target_dataset
-        self.attack_model = None  # don't create till attack
+        self.attack_model = attack_model_creator()  # don't create till attack
         self.attacker_dataset = attacker_dataset
         self.n_shadows = n_shadows
         self.shadow_creator = shadow_creator
@@ -62,7 +53,6 @@ class MIAWrapper():
     @param D_in_sample_size: num of samples from D_in. Default is min (D_in_sample_size, D_out_sample_size)
     @param D_out_sample_size: num of samples from D_attacker (any instances out of D_in will do). Default is min (D_in_sample_size, D_out_sample_size)
     """
-    
     def evaluate_attack(self, D_in_sample_size=None, D_out_sample_size=None):
         if D_in_sample_size is None:
             D_in_sample_size = min(self.target_dataset[0].shape[0], self.attacker_dataset[0].shape[0])
@@ -86,8 +76,8 @@ class ConfidenceVectorAttack(MIAWrapper):
     @param D_shadow_size: size of D_shadow_i for every shadow model
     @param verbose: verbosity meter
     """
-    def __init__(self, target_model, target_dataset, attacker_dataset, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
-        super(ConfidenceVectorAttack, self).__init__(target_model, target_dataset, attacker_dataset, shadow_creator, n_shadows, D_shadow_size, verbose)
+    def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
+        super(ConfidenceVectorAttack, self).__init__(target_model, target_dataset, attacker_dataset, attack_model_creator, shadow_creator, n_shadows, D_shadow_size, verbose)
 
     """
     Generate shadow dataset, create and train shadows, generate attack model dataset, create and train attack model.
@@ -119,8 +109,8 @@ class LabelOnlyAttack(MIAWrapper):
     @param D_shadow_size: size of D_shadow_i for every shadow model
     @param verbose: verbosity meter
     """
-    def __init__(self, target_model, target_dataset, attacker_dataset, rotates=3, translates=1, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
-        super(LabelOnlyAttack, self).__init__(target_model, target_dataset, attacker_dataset, shadow_creator, n_shadows, D_shadow_size, verbose)
+    def __init__(self, target_model, target_dataset, attacker_dataset, rotates=3, translates=1, attack_model_creator=None, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
+        super(LabelOnlyAttack, self).__init__(target_model, target_dataset, attacker_dataset, attack_model_creator, shadow_creator, n_shadows, D_shadow_size, verbose)
         self.r = rotates
         self.d = translates 
     """
