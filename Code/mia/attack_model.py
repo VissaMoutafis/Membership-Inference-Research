@@ -42,7 +42,7 @@ class DefaultAttackModel():
         # decide membership
         y_member = np.ones(shape=(y.shape[0], 1)) if in_D else np.zeros(shape=(y.shape[0], 1))
         prob = layers.Softmax()
-        ret = prob(model.predict(X)).numpy().reshape((-1,self.n_classes))
+        ret = prob(model.predict(X).astype(np.float32)).numpy().reshape((-1,self.n_classes))
         
         # return an instance <true label, confidence vector, 0/1 D_target membership> 
         return np.concatenate((y.reshape((-1, 1)), ret, y_member), axis=1)
@@ -93,6 +93,7 @@ class DefaultAttackModel():
     def per_class_acc(self, X_attack, y_attack, n_classes):
       for c in range(n_classes):
         class_instances = X_attack[:, 0] == c # get same class samples
+        print(X_attack[class_instances, :].shape, y_attack[class_instances].shape)
         test_loss, test_acc = self.model.evaluate(X_attack[class_instances, :], y_attack[class_instances], verbose=0)
         print(f"class-{c+1} acc: {test_acc}")
 
