@@ -73,7 +73,8 @@ class DefaultAttackModel():
         # fit the model
         try:
             self.history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, verbose=self.VERBOSE)
-        except:
+        except :
+            print(f'Warning: Cannot fit with tf-like fit routine..trying sklearn.')
             self.model.fit(X_train, y_train)
             
         return self.history

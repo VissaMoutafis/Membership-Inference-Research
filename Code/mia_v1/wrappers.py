@@ -13,6 +13,7 @@ class MIAWrapper():
     @param target_model: the model to perform attack to.
     @param target_dataset: the target's training dataset
     @param attacker_dataset: the dataset that attacker has access to. Will be used in shadow models training
+    @param attack_model_creator: function to return attack model architecture, compiled 
     @param shadow_creator: function to return a shadow model
     @param n_shadows: number of shadow models
     @param D_shadow_size: size of D_shadow_i for every shadow model
@@ -28,7 +29,8 @@ class MIAWrapper():
         # set up variables
         self.target_model = target_model
         self.target_dataset = target_dataset
-        self.attack_model = attack_model_creator()  # don't create till attack
+        self.attack_model_creator = attack_model_creator  
+        self.attack_model = None 
         self.attacker_dataset = attacker_dataset
         self.n_shadows = n_shadows
         self.shadow_creator = shadow_creator
@@ -91,7 +93,7 @@ class ConfidenceVectorAttack(MIAWrapper):
         self.shadow_model_bundle = self.create_shadows()
         
         # create and train the attack model
-        self.attack_model = DefaultAttackModel(self.shadow_model_bundle, self.n_classes, (self.n_classes+1, ), self.ATTACK_MODEL_OPTIMIZER)
+        self.attack_model = DefaultAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator)
         self.attack_model.fit(self.ATTACK_MODEL_EPOCHS)
         
         
@@ -125,6 +127,6 @@ class LabelOnlyAttack(MIAWrapper):
         self.shadow_model_bundle = self.create_shadows()
         
         # create and train the attack model
-        self.attack_model = LabelOnlyAttackModel(self.shadow_model_bundle, self.n_classes, (2*self.r+4*self.d+2,), self.ATTACK_MODEL_OPTIMIZER)
+        self.attack_model = LabelOnlyAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator)
         self.attack_model.fit(self.r, self.d, self.ATTACK_MODEL_EPOCHS)
         

@@ -119,7 +119,7 @@ def augment_dataset(X, y, r=2, d=1):
 
 def cifar_10_f_attack_builder():
     model = models.Sequential()
-    model.add(layers.Dense(10, input_shape=(11, 1)))
+    model.add(layers.Dense(10, input_shape=(11,)))
     model.add(layers.LeakyReLU(0.3))
     model.add(layers.Dense(1, activation='sigmoid'))
         
