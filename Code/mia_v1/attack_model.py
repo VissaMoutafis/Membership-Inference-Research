@@ -121,6 +121,6 @@ class DefaultAttackModel():
             plt.plot(fpr, tpr)
             print(f"AUC: {roc_auc_score(y, y_pred_proba)}")
         except:
-            fpr, tpr, _ = roc_curve(y, y_pred_proba[y_pred_proba > 0.5])
+            fpr, tpr, _ = roc_curve(y.reshape(-1), y_pred_proba[:,1])
             plt.plot(fpr, tpr)
-            print(f"AUC: {roc_auc_score(y, y_pred_proba[y_pred_proba > 0.5])}")
+            print(f"AUC: {roc_auc_score(y.reshape(-1), y_pred_proba[:,1])}")

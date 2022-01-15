@@ -7,7 +7,8 @@ from mia.shadow_models import ShadowModelBatch
 class MIAWrapper():
     ATTACK_MODEL_OPTIMIZER = 'adam'
     ATTACK_MODEL_EPOCHS = 100
-
+    SHADOW_MODEL_TYPE = 'tf'
+    ATTACK_MODEL_TYPE = 'tf'
     """
     Wrapper for MIA framework.
     @param target_model: the model to perform attack to.
@@ -26,6 +27,7 @@ class MIAWrapper():
     def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
         DefaultAttackModel.VERBOSE = verbose
         ShadowModelBatch.VERBOSE = verbose 
+        
         # set up variables
         self.target_model = target_model
         self.target_dataset = target_dataset
@@ -46,7 +48,7 @@ class MIAWrapper():
     Warning: called inside the wrapper, not for outside usage. 
     """
     def create_shadows(self):
-        shadow_models_batch = ShadowModelBatch(self.n_shadows, self.shadow_creator) # shadow model list
+        shadow_models_batch = ShadowModelBatch(self.n_shadows, self.shadow_creator, model_type=self.SHADOW_MODEL_TYPE) # shadow model list
         shadow_models_batch.fit_all(self.D_shadows, epochs=25)
         return shadow_models_batch # return a list where every item is (model, acc), train-data, test-data
 
