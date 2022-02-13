@@ -2,8 +2,8 @@
 # in a black-box label only fashion
 # ~Written by Vissarion Moutafis~ for Undergraduate Thesis
 import numpy as np
-from mia.attack_model import DefaultAttackModel
-from mia.utilities import create_rotates, create_translates, apply_augment
+from mia_v1.attack_model import DefaultAttackModel
+from mia_v1.utilities import create_rotates, create_translates, apply_augment
 from tensorflow.keras import layers
 
 """ API of model to get predictions : returns labels only"""

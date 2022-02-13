@@ -1,8 +1,8 @@
 import numpy as np
-from mia.attack_model import *
-from mia.label_only import LabelOnlyAttackModel
-from mia.utilities import *
-from mia.shadow_models import ShadowModelBatch
+from mia_v1.attack_model import *
+from mia_v1.label_only import LabelOnlyAttackModel
+from mia_v1.utilities import *
+from mia_v1.shadow_models import ShadowModelBatch
 
 class MIAWrapper():
     ATTACK_MODEL_OPTIMIZER = 'adam'
