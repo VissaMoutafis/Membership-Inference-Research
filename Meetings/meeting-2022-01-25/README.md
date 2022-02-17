@@ -6,8 +6,11 @@ We discussed about the notebooks in this directory and concluded that
 - the more features we miss the less our attack will score
 
 We also decided to close couple of directions, as well as open some other ones.
+## More Research Points
+### Differential Privacy with MIAs
+Find and read more papers on differential privacy and MIAs.
 
-## Closed Direcitions
+## Soon-to-be Closed Direcitions
 
 ### Overfit vs Attack Performance
 We will finish our research on overfitting-attack score, by training a model till it reaches its top prediction state with no overfit. After that we will train the model by 10 steps at a time. Every time we will attack the produced model and record the attack scores. At the end we will present the plots that show the **precision**, **recall** and **AUC score** of the attack at each point.
