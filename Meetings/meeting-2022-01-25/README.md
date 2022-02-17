@@ -20,7 +20,7 @@ We will do that for CIFAR-10 and (maybe) MNIST dataset.
 We will explore other datasets so that we will prove experimentaly that the label only attack will score at least as high as the original attack and maybe even better.
 We will attack based on datasets that do not contain images.
 
-### MIA with missing values
+### MIA with missing values :heavy_check_mark:
 
 We will the `ADULT_mia_v1.ipynb` attack scenario where we want to infer the memebership of instances that might contain missing values-features. In first version we train the attack shadow models and attack model in data that **do not** contain missing values. WHAT IF we used data with missing features in the attack during the training process?  
 
