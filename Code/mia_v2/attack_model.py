@@ -108,19 +108,27 @@ class DefaultAttackModel():
             print("Warning: AttackModel has no attribute evaluate")
             
         y_pred_proba = self.predict(X)
-        try:
+        
+        if (len(y_pred_proba.shape) == 2 and y_pred_proba.shape[1] == 2):
             y_pred = np.argmax(y_pred_proba, axis=1)
-        except:
+        else:
             y_pred = y_pred_proba > 0.5
-            
-        print(classification_report(y.reshape(-1), y_pred.reshape(-1)))
+        
+        _report = classification_report(y.reshape(-1).astype(np.int8), y_pred.reshape(-1).astype(np.int8), labels=[0,1], target_names=['Out', 'In'], output_dict=True)
+        print(classification_report(y.reshape(-1).astype(np.int8),
+              y_pred.reshape(-1).astype(np.int8), labels=[0, 1], target_names=['Out', 'In']))
         
         # ROC-Curve
         try:
             fpr, tpr, _ = roc_curve(y, y_pred_proba)
             plt.plot(fpr, tpr)
-            print(f"AUC: {roc_auc_score(y, y_pred_proba)}")
+            auc_ = roc_auc_score(y, y_pred_proba)
+            print(f"AUC: {auc_}")
         except:
             fpr, tpr, _ = roc_curve(y.reshape(-1), y_pred_proba[:,1])
             plt.plot(fpr, tpr)
-            print(f"AUC: {roc_auc_score(y.reshape(-1), y_pred_proba[:,1])}")
+            auc_ = roc_auc_score(y.reshape(-1), y_pred_proba[:, 1])
+            print(f"AUC: {auc_}")
+
+        # return classification report, false and true percentage, in case someone wants to use it
+        return _report, auc_, fpr, tpr

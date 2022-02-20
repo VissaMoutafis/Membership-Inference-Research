@@ -1,12 +1,13 @@
 import numpy as np
-from mia.attack_model import *
-from mia.label_only import LabelOnlyAttackModel
-from mia.utilities import *
-from mia.shadow_models import ShadowModelBatch
+from mia_v2.attack_model import *
+from mia_v2.label_only import LabelOnlyAttackModel
+from mia_v2.utilities import *
+from mia_v2.shadow_models import ShadowModelBatch
 
 class MIAWrapper():
     ATTACK_MODEL_OPTIMIZER = 'adam'
     ATTACK_MODEL_EPOCHS = 100
+    SHADOW_MODELS_EPOCHS = 100
     SHADOW_MODEL_TYPE = 'tf'
     ATTACK_MODEL_TYPE = 'tf'
     """
@@ -47,9 +48,9 @@ class MIAWrapper():
     Create shadow models batch. Fit all models.
     Warning: called inside the wrapper, not for outside usage. 
     """
-    def create_shadows(self):
+    def create_shadows(self, epochs=100):
         shadow_models_batch = ShadowModelBatch(self.n_shadows, self.shadow_creator, model_type=self.SHADOW_MODEL_TYPE) # shadow model list
-        shadow_models_batch.fit_all(self.D_shadows, epochs=25)
+        shadow_models_batch.fit_all(self.D_shadows, epochs=epochs)
         return shadow_models_batch # return a list where every item is (model, acc), train-data, test-data
 
     """
@@ -65,7 +66,7 @@ class MIAWrapper():
 
         D_in = self.attack_model.prepare_batch(self.target_model, self.target_dataset[0][:D_in_sample_size], self.target_dataset[1][:D_in_sample_size], True)
         D_out = self.attack_model.prepare_batch(self.target_model, self.attacker_dataset[0][:D_out_sample_size], self.attacker_dataset[1][:D_out_sample_size], False)
-        self.attack_model.evaluate(np.concatenate((D_out[:, :-1], D_in[:, :-1])),  np.concatenate((D_out[:, -1], D_in[:, -1])), self.verbose)
+        return self.attack_model.evaluate(np.concatenate((D_out[:, :-1], D_in[:, :-1])),  np.concatenate((D_out[:, -1], D_in[:, -1])), self.verbose)
 
 
 
@@ -92,7 +93,8 @@ class ConfidenceVectorAttack(MIAWrapper):
         self.D_shadows = generate_shadow_dataset(self.target_model, self.n_shadows, self.D_shadow_size, self.n_classes, self.attacker_dataset[0], self.attacker_dataset[1])
 
         # create shadow models
-        self.shadow_model_bundle = self.create_shadows()
+        self.shadow_model_bundle = self.create_shadows(
+            epochs=self.SHADOW_MODELS_EPOCHS)
         
         # create and train the attack model
         self.attack_model = DefaultAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator)
@@ -126,7 +128,7 @@ class LabelOnlyAttack(MIAWrapper):
         self.D_shadows = generate_shadow_dataset(self.target_model, self.n_shadows, self.D_shadow_size, self.n_classes, self.attacker_dataset[0], self.attacker_dataset[1])
 
         # create shadow models
-        self.shadow_model_bundle = self.create_shadows()
+        self.shadow_model_bundle = self.create_shadows(self.SHADOW_MODELS_EPOCHS)
         
         # create and train the attack model
         self.attack_model = LabelOnlyAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator)
