@@ -4,6 +4,7 @@
 from sys import stderr
 from sklearn.metrics import classification_report, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.callbacks import EarlyStopping
 
 class ShadowModelBatch():
     VERBOSE = False
