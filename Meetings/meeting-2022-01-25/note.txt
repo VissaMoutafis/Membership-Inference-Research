@@ -16,7 +16,8 @@ Method:
 
 BRUTE FORCE TASKS:
 
-- Try the label only - confidence vector attacks comparison in different datasets. (Purchase-10/20/100 datasets, and other datasets with not-image-like data)
+- Try the label only - confidence vector attacks comparison in different datasets. (Purchase-10/20/100 datasets, and other datasets with not-image-like data) 
+Note to self: The perturbations can be made by using a GAN Network providing different amount of noise each time.
 
 - Find papers with MIA and DP (TODO)
 
