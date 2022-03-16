@@ -7,8 +7,8 @@ We discussed about the notebooks in this directory and concluded that
 
 We also decided to close couple of directions, as well as open some other ones.
 ## More Research Points
-### Differential Privacy with MIAs and other defences
-Find and read more papers on differential privacy and MIAs.
+### Differential Privacy with MIAs and other defences :heavy_check_mark:
+Find and read more papers on differential privacy and MIAs defences in general.
 
 ## Soon-to-be Closed Direcitions
 
@@ -18,7 +18,7 @@ We will finish our research on overfitting-attack score, by training a model til
 We will do that for CIFAR-10 and (maybe) MNIST dataset.
 
 
-### Label Only Attack in no-image Datasets
+### Label Only Attack in no-image Datasets :heavy_check_mark:
 
 We will explore other datasets so that we will prove experimentaly that the label only attack will score at least as high as the original attack and maybe even better.
 We will attack based on datasets that do not contain images.
