@@ -64,7 +64,7 @@ class DefaultAttackModel():
     """
     Classic fit loop that trains the model based on the shadow batch we provided at the constructor
     """
-    def fit(self, epochs=100):
+    def fit(self, **train_args):
         # first generate the attack dataset
         self.attack_dataset = self.generate_attack_dataset()
         X, y = self.attack_dataset[:, :-1], self.attack_dataset[:, -1]
@@ -72,7 +72,7 @@ class DefaultAttackModel():
 
         # fit the model
         try:
-            self.history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, verbose=self.VERBOSE)
+            self.history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), verbose=self.VERBOSE, **train_args)
         except :
             print(f'Warning: Cannot fit with tf-like fit routine..trying sklearn.')
             self.model.fit(X_train, y_train)

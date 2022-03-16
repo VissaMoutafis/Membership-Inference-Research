@@ -1,6 +1,6 @@
 import numpy as np
 from mia_v2.attack_model import *
-from mia_v2.label_only import LabelOnlyAttackModel
+from mia_v2.label_only import LabelOnlyAttackModel, augmented_queries
 from mia_v2.utilities import *
 from mia_v2.shadow_models import ShadowModelBatch
 
@@ -48,9 +48,9 @@ class MIAWrapper():
     Create shadow models batch. Fit all models.
     Warning: called inside the wrapper, not for outside usage. 
     """
-    def create_shadows(self, epochs=100):
+    def create_shadows(self, **train_args):
         shadow_models_batch = ShadowModelBatch(self.n_shadows, self.shadow_creator, model_type=self.SHADOW_MODEL_TYPE) # shadow model list
-        shadow_models_batch.fit_all(self.D_shadows, epochs=epochs)
+        shadow_models_batch.fit_all(self.D_shadows, **train_args)
         return shadow_models_batch # return a list where every item is (model, acc), train-data, test-data
 
     """
@@ -87,18 +87,21 @@ class ConfidenceVectorAttack(MIAWrapper):
     """
     Generate shadow dataset, create and train shadows, generate attack model dataset, create and train attack model.
     """
-    def perform_attack(self):
+    def perform_attack(self, **training_args):
+        if 'shadow' not in training_args:
+            training_args['shadow'] = {'epochs':50, 'batch_size':64}
+        if 'attack' not in training_args:
+            training_args['attack'] = {'epochs':50, 'batch_size':64}
         self.trained = True 
         # generate shadow datasets
         self.D_shadows = generate_shadow_dataset(self.target_model, self.n_shadows, self.D_shadow_size, self.n_classes, self.attacker_dataset[0], self.attacker_dataset[1])
 
         # create shadow models
-        self.shadow_model_bundle = self.create_shadows(
-            epochs=self.SHADOW_MODELS_EPOCHS)
+        self.shadow_model_bundle = self.create_shadows(**training_args['shadow'])
         
         # create and train the attack model
         self.attack_model = DefaultAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator)
-        self.attack_model.fit(self.ATTACK_MODEL_EPOCHS)
+        self.attack_model.fit(**training_args['attack'])
         
         
         
@@ -115,22 +118,26 @@ class LabelOnlyAttack(MIAWrapper):
     @param D_shadow_size: size of D_shadow_i for every shadow model
     @param verbose: verbosity meter
     """
-    def __init__(self, target_model, target_dataset, attacker_dataset, rotates=3, translates=1, attack_model_creator=None, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
+    def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
         super(LabelOnlyAttack, self).__init__(target_model, target_dataset, attacker_dataset, attack_model_creator, shadow_creator, n_shadows, D_shadow_size, verbose)
-        self.r = rotates
-        self.d = translates 
+
     """
     Generate shadow dataset, create and train shadows, generate attack model dataset (instances of <y_true, shadow_i(x), shadow_i(aug(x))> ), create and train attack model.
     """
-    def perform_attack(self):
+    def perform_attack(self, augmentation_generator=augmented_queries, aug_gen_args={'r':2, 'd':1}, **training_args):
+        if 'shadow' not in training_args:
+            training_args['shadow'] = {'epochs':50, 'batch_size':64}
+        if 'attack' not in training_args:
+            training_args['attack'] = {'epochs':50, 'batch_size':64}
         self.trained = True 
         # generate shadow datasets
         self.D_shadows = generate_shadow_dataset(self.target_model, self.n_shadows, self.D_shadow_size, self.n_classes, self.attacker_dataset[0], self.attacker_dataset[1])
 
         # create shadow models
-        self.shadow_model_bundle = self.create_shadows(self.SHADOW_MODELS_EPOCHS)
+        self.shadow_model_bundle = self.create_shadows(**training_args['shadow'])
         
         # create and train the attack model
-        self.attack_model = LabelOnlyAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator)
-        self.attack_model.fit(self.r, self.d, self.ATTACK_MODEL_EPOCHS)
+        self.attack_model = LabelOnlyAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, 
+                                                 augmentations_generator=augmentation_generator, aug_gen_args=aug_gen_args)
+        self.attack_model.fit(**training_args['attack'])
         

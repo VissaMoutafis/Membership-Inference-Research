@@ -26,7 +26,7 @@ class ShadowModelBatch():
     @param D_shadows: list of D_shadow_i = (X, y)
     @param epochs: epochs of training for each shadow model
     """
-    def fit_all(self, D_shadows, epochs=50):
+    def fit_all(self, D_shadows, **train_args):
 
         for i in range(self.n_shadows):
             # split the D_shadow in train, test sets
@@ -35,8 +35,7 @@ class ShadowModelBatch():
             self.D_shadow.append(D_shadow_i)
             
             if self.model_type == 'tf':
-                es = EarlyStopping(monitor='val_accuracy', mode='max', min_delta=1e-3, patience=3)
-                self.history.append(self.shadow_models[i].fit(X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, callbacks=[es], verbose=self.VERBOSE))
+                self.history.append(self.shadow_models[i].fit(X_train, y_train, validation_data=(X_test, y_test), verbose=self.VERBOSE, **train_args))
             else:
                 # just fit, no need for other arguments
                 self.shadow_models[i].fit(X_train, y_train)

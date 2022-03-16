@@ -73,11 +73,10 @@ class LabelOnlyAttackModel(DefaultAttackModel):
     @param _optimizer: optimizer to use in attack-model fitting
     """
 
-    def __init__(self, shadow_batch, n_classes, f_attack_builder):
-        self.r = 2  # default values
-        self.d = 1  # default values
-        super(LabelOnlyAttackModel, self).__init__(
-            shadow_batch, n_classes, f_attack_builder)
+    def __init__(self, shadow_batch, n_classes, f_attack_builder, augmentations_generator=augmented_queries, aug_gen_args={'r':2, 'd':1}):
+        self.aug_gen_args = aug_gen_args
+        self.augmentations_generator = augmentations_generator
+        super(LabelOnlyAttackModel, self).__init__(shadow_batch, n_classes, f_attack_builder)
 
     """
     helper to prepare a batch of shadow data into a batch of attack data
@@ -99,20 +98,8 @@ class LabelOnlyAttackModel(DefaultAttackModel):
         prob = layers.Softmax()
         ret = prob(model.predict(X)).numpy()
         y_pred = np.apply_along_axis(np.argmax, 1, ret).reshape((-1, 1))
-        perturbed_queries_res = augmented_queries(
-            model, X, y_pred, self.r, self.d)
-
+        perturbed_queries_res = self.augmentations_generator(
+            model, X, y_pred, **self.aug_gen_args)
+            
         # return an instance <actual class, predicted class, perturbed_queries_res from shadow models, 'in'/'out' D_target membership>
         return np.concatenate((y.reshape(-1, 1), y_pred, perturbed_queries_res, y_member), axis=1)
-
-    """
-    Fit the attack model, but first provide with perturbation params to generate the proper ammount of features per instance (given as X_inpt_dim in __init__)
-    @param r: rotates
-    @param d: translates
-    """
-
-    def fit(self, r=2, d=1, epochs=100):
-        # set up r, d before fit
-        self.r = r
-        self.d = d
-        super(LabelOnlyAttackModel, self).fit(epochs=epochs)
