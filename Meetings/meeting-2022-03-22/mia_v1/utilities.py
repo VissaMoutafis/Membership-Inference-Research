@@ -127,20 +127,3 @@ def cifar_10_f_attack_builder():
                     loss='binary_crossentropy',
                     metrics=['accuracy'])
     return model 
-
-
-def evaluate_model_vulnerability(model, D_target, D_attacker, **evaluate_args):
-    """ 
-    Evaluate target model vulnerabilities given the target-model, the D_in (dataset in which membership we try to infer) and the dataset the attacker has at hand
-    """
-    
-    # get the models loss and accuracy on target and attacker data
-    loss_target, acc_target = model.evaluate(**D_target, **evaluate_args)
-    loss_attacker, acc_attacker = model.evaluate(**D_attacker, **evaluate_args)
-
-    # define A and L
-    a = acc_target / acc_attacker
-    l = loss_attacker / loss_target
-    
-    # estimate Vulnerability metric (attacker's advantage)
-    v = round(math.log(2 * (a*l) / (a+l) ), 2)
