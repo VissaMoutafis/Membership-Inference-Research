@@ -4,17 +4,21 @@
 
 - [Introduction to TensorFlow Privacy - Presentation](https://www.youtube.com/watch?v=S5j0kKgqbJc)
 
-## General
+## General Outline of meeting
 
-## TODO for closed directions
-
+- Discussed a little of Missing values attack
+- Evaluated the Overfit research with respect to target dataset train set size and epochs of training in the target model.
+- 
 ### Check MIA with missing values (EASY) ✔️
+
 Some strange results in **ADULT_mia_v2.ipynb**, in the final boards, where the $0\%$ MVP datasets (both test and shadow) performed really poorly. This was not the results of the original attack where we attacked with full on shadow dataset on missing valued - attack test dataset.
 
-### Label Only in Categorical data (EASY)
+### Label Only in Categorical data (EASY) ✔️
+
 - Create a notebook running both attacks and create comparative graphs
 
 ### Create a new metric and run some of the attacks to evaluate on it
+
 Let us define $$A = \frac{Acc(Model(D_{train}))}{Acc(Model(D_{out}))}$$
 and $$L = \frac{Loss(Model(D_{test}))}{Loss(Model(D_{train}))}$$
 
