@@ -8,7 +8,8 @@
 
 - Discussed a little of Missing values attack
 - Evaluated the Overfit research with respect to target dataset train set size and epochs of training in the target model.
-- 
+- Explored how to tune perturbations a little further.
+- Talked DP and how to start a small on DP defences against MIAs
 ### Check MIA with missing values (EASY) ✔️
 
 Some strange results in **ADULT_mia_v2.ipynb**, in the final boards, where the $0\%$ MVP datasets (both test and shadow) performed really poorly. This was not the results of the original attack where we attacked with full on shadow dataset on missing valued - attack test dataset.
@@ -19,8 +20,8 @@ Some strange results in **ADULT_mia_v2.ipynb**, in the final boards, where the $
 
 ### Create a new metric and run some of the attacks to evaluate on it
 
-Let us define $$A = \frac{Acc(Model(D_{train}))}{Acc(Model(D_{out}))}$$
-and $$L = \frac{Loss(Model(D_{test}))}{Loss(Model(D_{train}))}$$
+Let us define $$A = \frac{Acc(Model(D_{target}))}{Acc(Model(D_{attacker}))}$$
+and $$L = \frac{Loss(Model(D_{attacker}))}{Loss(Model(D_{target}))}$$
 
 Now we can define a new metric that we will call **Model MIA Vulnerability** defined as:
 
