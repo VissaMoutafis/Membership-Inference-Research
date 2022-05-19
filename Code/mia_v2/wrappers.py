@@ -3,6 +3,7 @@ from mia_v2.attack_model import *
 from mia_v2.label_only import LabelOnlyAttackModel, augmented_queries
 from mia_v2.utilities import *
 from mia_v2.shadow_models import ShadowModelBatch
+from mia_v2.confidence_masking import TopKConfidenceMaskingAttackModel
 
 class MIAWrapper():
     ATTACK_MODEL_OPTIMIZER = 'adam'
@@ -25,7 +26,7 @@ class MIAWrapper():
     @param ATTACK_MODEL_OPTIMIZER: optimizer for attack model. Defaults to 'adam'
     @param ATTACK_MODEL_EPOCHS: epochs fo training for attack model. Defaults to 100
     """
-    def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
+    def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, atck_crt_args={}, shadow_creator=None, shd_crt_args={}, n_shadows=1, D_shadow_size=1000, verbose=False):
         DefaultAttackModel.VERBOSE = verbose
         ShadowModelBatch.VERBOSE = verbose 
         
@@ -33,10 +34,12 @@ class MIAWrapper():
         self.target_model = target_model
         self.target_dataset = target_dataset
         self.attack_model_creator = attack_model_creator  
+        self.atck_crt_args = atck_crt_args
         self.attack_model = None 
         self.attacker_dataset = attacker_dataset
         self.n_shadows = n_shadows
         self.shadow_creator = shadow_creator
+        self.shd_crt_args = shd_crt_args
         self.D_shadow_size = D_shadow_size
         self.verbose = verbose
         self.n_classes = len(np.unique(target_dataset[1]))
@@ -49,7 +52,7 @@ class MIAWrapper():
     Warning: called inside the wrapper, not for outside usage. 
     """
     def create_shadows(self, **train_args):
-        shadow_models_batch = ShadowModelBatch(self.n_shadows, self.shadow_creator, model_type=self.SHADOW_MODEL_TYPE) # shadow model list
+        shadow_models_batch = ShadowModelBatch(self.n_shadows, self.shadow_creator, self.atck_crt_args, model_type=self.SHADOW_MODEL_TYPE) # shadow model list
         shadow_models_batch.fit_all(self.D_shadows, **train_args)
         return shadow_models_batch # return a list where every item is (model, acc), train-data, test-data
 
@@ -81,8 +84,10 @@ class ConfidenceVectorAttack(MIAWrapper):
     @param D_shadow_size: size of D_shadow_i for every shadow model
     @param verbose: verbosity meter
     """
-    def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
-        super(ConfidenceVectorAttack, self).__init__(target_model, target_dataset, attacker_dataset, attack_model_creator, shadow_creator, n_shadows, D_shadow_size, verbose)
+
+    def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, atck_crt_args={}, shadow_creator=None, shd_crt_args={}, n_shadows=1, D_shadow_size=1000, verbose=False):
+        super(ConfidenceVectorAttack, self).__init__(target_model, target_dataset, attacker_dataset,
+                                                     attack_model_creator, atck_crt_args, shadow_creator, shd_crt_args, n_shadows, D_shadow_size, verbose)
 
     """
     Generate shadow dataset, create and train shadows, generate attack model dataset, create and train attack model.
@@ -100,26 +105,26 @@ class ConfidenceVectorAttack(MIAWrapper):
         self.shadow_model_bundle = self.create_shadows(**training_args['shadow'])
         
         # create and train the attack model
-        self.attack_model = DefaultAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator)
+        self.attack_model = DefaultAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, self.atck_crt_args)
         self.attack_model.fit(**training_args['attack'])
         
         
         
 class LabelOnlyAttack(MIAWrapper):
     """
-    Wrapper for confidence vector MIA.
+    Wrapper for label only MIA.
     @param target_model: the model to perform attack to.
     @param target_dataset: the target's training dataset
     @param attacker_dataset: the dataset that attacker has access to. Will be used in shadow models training
-    @param rotates: number of rotations (create 2*r rotates)
-    @param translats: number of translates (create 4*d translates)
     @param shadow_creator: function to return a shadow model
     @param n_shadows: number of shadow models
     @param D_shadow_size: size of D_shadow_i for every shadow model
     @param verbose: verbosity meter
     """
-    def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, shadow_creator=None, n_shadows=1, D_shadow_size=1000, verbose=False):
-        super(LabelOnlyAttack, self).__init__(target_model, target_dataset, attacker_dataset, attack_model_creator, shadow_creator, n_shadows, D_shadow_size, verbose)
+
+    def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, atck_crt_args={}, shadow_creator=None, shd_crt_args={}, n_shadows=1, D_shadow_size=1000, verbose=False):
+        super(LabelOnlyAttack, self).__init__(target_model, target_dataset, attacker_dataset,
+                                              attack_model_creator, atck_crt_args, shadow_creator, shd_crt_args, n_shadows, D_shadow_size, verbose)
 
     """
     Generate shadow dataset, create and train shadows, generate attack model dataset (instances of <y_true, shadow_i(x), shadow_i(aug(x))> ), create and train attack model.
@@ -137,7 +142,27 @@ class LabelOnlyAttack(MIAWrapper):
         self.shadow_model_bundle = self.create_shadows(**training_args['shadow'])
         
         # create and train the attack model
-        self.attack_model = LabelOnlyAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, 
+        self.attack_model = LabelOnlyAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, self.atck_crt_args,
                                                  augmentations_generator=augmentation_generator, aug_gen_args=aug_gen_args)
         self.attack_model.fit(**training_args['attack'])
+        
+
+
+class TopKConfidenceMaskingAttack(MIAWrapper):
+    """
+    Wrapper for confidence vector MIA.
+    @param target_model: the model to perform attack to.
+    @param target_dataset: the target's training dataset
+    @param attacker_dataset: the dataset that attacker has access to. Will be used in shadow models training
+    @param shadow_creator: function to return a shadow model
+    @param n_shadows: number of shadow models
+    @param D_shadow_size: size of D_shadow_i for every shadow model
+    @param verbose: verbosity meter
+    """
+
+    def __init__(self, target_model, target_dataset, attacker_dataset, top_k, attack_model_creator=None, atck_crt_args={}, shadow_creator=None, shd_crt_args={}, n_shadows=1, D_shadow_size=1000, verbose=False):
+        super(TopKConfidenceMaskingAttack, self).__init__(target_model, target_dataset, attacker_dataset,
+                                              attack_model_creator, atck_crt_args, shadow_creator, shd_crt_args, n_shadows, D_shadow_size, verbose)
+        # override n_classes definition
+        self.n_classes = top_k
         

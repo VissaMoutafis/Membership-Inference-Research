@@ -13,8 +13,8 @@ class ShadowModelBatch():
     @param n_shadows: num of shadow models
     @param shadow_creator: function to create a shadow models
     """
-    def __init__(self, n_shadows, shadow_creator, model_type='tf'):
-        self.shadow_models = [shadow_creator() for _ in range(n_shadows)]
+    def __init__(self, n_shadows, shadow_creator, shadow_crt_args, model_type='tf'):
+        self.shadow_models = [shadow_creator(**shadow_crt_args) for _ in range(n_shadows)]
         self.n_shadows = n_shadows
         # dataset in form of (X_train, y_train), (X_test, y_test)
         self.D_shadow = []

@@ -13,9 +13,9 @@ class DefaultAttackModel():
     @param X_attack_dim: the dimensions of the attack dataset's instances (i.e. in confidence vector we use (n_classes,))
     @param _optimizer: optimizer to use in attack-model fitting
     """
-    def __init__(self, shadow_batch, n_classes, f_attack_builder):
+    def __init__(self, shadow_batch, n_classes, f_attack_builder, f_atck_args={}):
         # default structure as Shokri et al. suggested
-        self.model = f_attack_builder()
+        self.model = f_attack_builder(**f_atck_args)
         
         self.shadow_models_batch = shadow_batch 
         self.n_classes = n_classes 

@@ -4,6 +4,10 @@ import scipy.ndimage.interpolation as interpolation
 import matplotlib.pyplot as plt
 from tensorflow.keras import models, layers
 from sklearn.metrics import accuracy_score, log_loss
+from GPUtil import showUtilization as gpu_usage
+from numba import cuda
+import torch
+import gc 
 
 """
 Divide a given dataset (X, y) according to the number of splits and the size of each D_i given.
@@ -130,32 +134,37 @@ def cifar_10_f_attack_builder():
     return model 
 
 
-def evaluate_model_vulnerability(model, D_target, D_attacker, model_type, **evaluate_args):
+def evaluate_model_vulnerability(model, D_target, D_out, model_type, **evaluate_args):
     """ 
     Evaluate target model vulnerabilities given the target-model, the D_in (dataset in which membership we try to infer) and the dataset the attacker has at hand
     """
     if model_type == 'tf':
         # get the models loss and accuracy on target and attacker data
         loss_target, acc_target = model.evaluate(D_target[0], D_target[1], **evaluate_args)
-        loss_attacker, acc_attacker = model.evaluate(D_attacker[0], D_attacker[1], **evaluate_args)
+        loss_out, acc_out = model.evaluate(D_out[0], D_out[1], **evaluate_args)
     elif model_type == 'sklearn':
         y_pred_target_proba = model.predict_proba(D_target[0])
         y_pred_target = np.argmax(y_pred_target_proba, axis=1)
         
-        y_pred_attacker_proba = model.predict_proba(D_attacker[0])
-        y_pred_attacker = np.argmax(y_pred_attacker_proba, axis=1)
+        y_pred_out_proba = model.predict_proba(D_out[0])
+        y_pred_out = np.argmax(y_pred_out_proba, axis=1)
         
         acc_target = accuracy_score(D_target[1], y_pred_target)
-        acc_attacker = accuracy_score(D_attacker[1], y_pred_attacker)
+        acc_out = accuracy_score(D_out[1], y_pred_out)
         
         loss_target = log_loss(D_target[1], y_pred_target_proba)
-        loss_attacker = log_loss(D_attacker[1], y_pred_attacker_proba)
+        loss_out = log_loss(D_out[1], y_pred_out_proba)
         
     # define A and L
-    a = acc_target / acc_attacker
-    l = loss_attacker / loss_target
+    a = acc_target / acc_out
+    l = loss_out / loss_target
     
     # estimate Vulnerability metric (attacker's advantage)
     v = round(math.log(2 * (a*l) / (a+l) ), 2)
     
     return v
+
+
+def free_gpu_cache():
+    # gc.collect()
+    torch.cuda.empty_cache()
