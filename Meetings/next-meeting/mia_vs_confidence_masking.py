@@ -11,11 +11,11 @@ Original file is located at
 In this notebook we will study the effect of overfitting in MIA's performance, given a CNN model, CIFAR-10 dataset and a MIA framework that will perfrom the attacks for us.
 """
 
-!pip install hiplot 
+import json
 import numpy as np
 import matplotlib.pyplot as plt
-import hiplot as hip
 from itertools import product 
+from datetime import datetime
 
 import math
 import tensorflow as tf
@@ -23,15 +23,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras import datasets, layers, models
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
-from tensorflow.keras import regularizers
 
-# for image interpolation
-import scipy.ndimage.interpolation as interpolation
-
-from sklearn.metrics import roc_auc_score, roc_curve
-from sklearn.metrics import classification_report
-
-!cp ../input/mia-v2 mia_v2 -r
 from mia_v2.attack_model import *
 from mia_v2.label_only import *
 from mia_v2.shadow_models import *
@@ -40,39 +32,15 @@ from mia_v2.confidence_masking import *
 from mia_v2.wrappers import ConfidenceVectorAttack, LabelOnlyAttack, TopKConfidenceMaskingAttack
 from tqdm.notebook import tqdm
 import sys
+
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
-def f_target(X_train, y_train, X_test, y_test, top_k, epochs=100):
+
+def f_target():
   """
   Returns a trained target model, if test data are specified we will evaluate the model and print its accuracy
   """
-  model = TopKConfidenceMaskingModel(top_k)
-  model.add(layers.Conv2D(32, (3, 3), activation='tanh', input_shape=(32, 32, 3)))
-  model.add(layers.MaxPooling2D((2, 2)))
-  model.add(layers.Conv2D(64, (3, 3), activation='tanh'))
-  model.add(layers.MaxPooling2D((2, 2)))
-
-
-  model.add(layers.Flatten())
-  model.add(layers.Dense(128, activation='relu'))
-
-  model.add(layers.Dense(10))
-  
-  optimizer = keras.optimizers.Adam()
-
-  model.compile(optimizer=optimizer,
-              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-              metrics=['accuracy'])
-  es = EarlyStopping(monitor='val_loss', mode='min', min_delta=1e-4, patience=5)
-  history = model.fit(X_train, y_train, 
-                      epochs=epochs, 
-                      validation_set=(X_test, y_test),
-                      callbacks=[es]
-                      )
-  return model, history
-
-def f_shadow(top_k):
-  model = TopKConfidenceMaskingModel(top_k)
+  model = models.Sequential()
   model.add(layers.Conv2D(32, (3, 3), activation='tanh', input_shape=(32, 32, 3)))
   model.add(layers.MaxPooling2D((2, 2)))
   model.add(layers.Conv2D(64, (3, 3), activation='tanh'))
@@ -91,6 +59,29 @@ def f_shadow(top_k):
               metrics=['accuracy'])
   return model
 
+def f_shadow():
+  model = models.Sequential()
+  model.add(layers.Conv2D(32, (3, 3), activation='tanh', input_shape=(32, 32, 3)))
+  model.add(layers.MaxPooling2D((2, 2)))
+  model.add(layers.Conv2D(64, (3, 3), activation='tanh'))
+  model.add(layers.MaxPooling2D((2, 2)))
+
+
+  model.add(layers.Flatten())
+  model.add(layers.Dense(128, activation='relu'))
+
+  model.add(layers.Dense(10))
+  
+  optimizer = keras.optimizers.Adam()
+
+  model.compile(optimizer=optimizer,
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+  return model
+
+def create_shadow_model(top_k=10, model_builder=f_shadow):
+  return TopKConfidenceMaskingModel(top_k, model_builder)
+
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
 train_images = train_images/255
 test_images = test_images/255
@@ -101,10 +92,10 @@ print(f"We have {len(train_images)} train instances and {len(test_images)} test 
 
 attacker_images, attacker_labels = (test_images, test_labels)
 
-N_SHADOWS = [1, 5, 10, 20]
-D_SHADOW= [2500, 5000, 7500]
-D_TARGET = [2500, 5000, 7500, 10000]
-TOP_K = [10, 8, 5, 2, 1]
+N_SHADOWS = [1]#, 5, 10, 20]
+D_SHADOW= [2500, 5000]#, 7500]
+D_TARGET = [2500, 5000]#, 7500, 10000]
+TOP_K = [10, 8]#, 5, 2, 1]
 TEST_SET_SIZE = 0.3
 
 prec = []
@@ -115,27 +106,35 @@ model_vuln = []
 
 config = {}
 for top_k in TOP_K:
-  config['#pred-classes'] = top_k
+  config['|y|'] = top_k
   for d_target in D_TARGET:
-    config['D_target'] = d_target
+    config['|D_target|'] = d_target
     d_total = int(d_target//TEST_SET_SIZE + 1)
     target_images, target_labels = train_images[:d_total], train_labels[:d_total]
     X_train, X_test, y_train, y_test = train_test_split(target_images, target_labels, test_size=TEST_SET_SIZE)
+    
     # train target model 
-    target_model, h = f_target(X_train, y_train, X_test, y_test, top_k)
+    target_model = TopKConfidenceMaskingModel(top_k, f_target)
+    es = EarlyStopping(monitor='val_loss', mode='min', min_delta=1e-4, patience=5)
+    history = target_model.fit(X_train, y_train, 
+                        epochs=100, 
+                        validation_data=(X_test, y_test),
+                        callbacks=[es]
+                        )
 
     for attack_settings in product(N_SHADOWS, D_SHADOW):
       # set up settings
       n_shadows, d_shadow_size = attack_settings
-      d_shadow_total = int(d_shadow_size//TEST_SET_SIZE + 1)
+      config['#Shadow-Models'] = n_shadows
+      config['|D_shadow_i|'] = d_shadow_size
       attack = TopKConfidenceMaskingAttack(target_model, (train_images, train_labels), 
                                 (attacker_images, attacker_labels), top_k, 
-                                shadow_creator=f_shadow, shd_crt_args={'top_k':top_k},
-                                attack_model_creator=cifar_10_f_attack_builder,
-                                n_shadows=N_SHADOWS, D_shadow_size=D_SHADOW, verbose=False)
+                                shadow_creator=create_shadow_model, shd_crt_args={'top_k':top_k, 'model_builder':f_shadow},
+                                attack_model_creator=cifar_10_f_attack_builder, atck_crt_args={'top_k':2*top_k},
+                                n_shadows=n_shadows, D_shadow_size=d_shadow_size, verbose=False)
 
       es = EarlyStopping(monitor='val_loss', mode='min', min_delta=1e-4, patience=5)
-      attack.perform_attack(shadow={'epochs':100, 'batch_size':128, 'callbacks':[es]}, attack={'epochs':50, 'batch_size':128})
+      attack.perform_attack(shadow={'epochs':100, 'batch_size':128, 'callbacks':[es]}, attack={'epochs':100, 'batch_size':128})
       score_ = attack.evaluate_attack()
 
       
@@ -146,54 +145,25 @@ for top_k in TOP_K:
       prec.append({**config, 'Precision' : score_[0]['macro avg']['precision']
       })
 
-for (d_size, dr, reg_l2) in tuning_points:
-  # train the model
-  X_train = train_images[:d_size]
-  y_train = train_labels[:d_size]
-  target_model, h = f_target(X_train, y_train, dropout=dr, reg_l=reg_l2, epochs=100)  
-  
-  # attack the model
-  attack.target_model = target_model
-  attack.target_dataset = X_train, y_train
-  score_ = attack.evaluate_attack()
-    
-  auc.append({
-      'D_target Size': d_size,
-      'Dropout': dr,
-      'L2-Regularization': reg_l2,
-      'AUC Score' : score_[1]
-  })
-  rec.append({
-      'D_target Size': d_size,
-      'Dropout': dr,
-      'L2-Regularization': reg_l2,
-      'Recall' : score_[0]['macro avg']['recall']
-  })
-  prec.append({
-      'D_target Size': d_size,
-      'Dropout': dr,
-      'L2-Regularization': reg_l2,
-      'Precision' : score_[0]['macro avg']['precision']
-  })
-  model_vuln.append({
-      'D_target Size': d_size,
-      'Dropout': dr,
-      'L2-Regularization': reg_l2,
-      'Model Vulnerability' : evaluate_model_vulnerability(target_model, (X_train, y_train), (attacker_images[:d_size], attacker_labels[:d_size]), 'tf', batch_size=256)
-  })
+with open('MIAvsConfMasking-{datetime.today()}.json', 'w') as fp:
+  json.dumps({
+    'prec':prec,
+    'rec':rec,
+    'auc': auc
+  }, fp)
 
-exp = hip.Experiment.from_iterable(auc)
-exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
-exp.display()
+# exp = hip.Experiment.from_iterable(auc)
+# exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
+# exp.display()
 
-exp = hip.Experiment.from_iterable(model_vuln)
-exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
-exp.display()
+# exp = hip.Experiment.from_iterable(model_vuln)
+# exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
+# exp.display()
 
-exp = hip.Experiment.from_iterable(prec)
-exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
-exp.display()
+# exp = hip.Experiment.from_iterable(prec)
+# exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
+# exp.display()
 
-exp = hip.Experiment.from_iterable(rec)
-exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
-exp.display()
+# exp = hip.Experiment.from_iterable(rec)
+# exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
+# exp.display()

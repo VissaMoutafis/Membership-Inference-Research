@@ -87,7 +87,13 @@ class ConfidenceVectorAttack(MIAWrapper):
 
     def __init__(self, target_model, target_dataset, attacker_dataset, attack_model_creator=None, atck_crt_args={}, shadow_creator=None, shd_crt_args={}, n_shadows=1, D_shadow_size=1000, verbose=False):
         super(ConfidenceVectorAttack, self).__init__(target_model, target_dataset, attacker_dataset,
-                                                     attack_model_creator, atck_crt_args, shadow_creator, shd_crt_args, n_shadows, D_shadow_size, verbose)
+                                                     attack_model_creator=attack_model_creator, 
+                                                     atck_crt_args=atck_crt_args, 
+                                                     shadow_creator=shadow_creator, 
+                                                     shd_crt_args=shd_crt_args, 
+                                                     n_shadows=n_shadows, 
+                                                     D_shadow_size=D_shadow_size, 
+                                                     verbose=verbose)
 
     """
     Generate shadow dataset, create and train shadows, generate attack model dataset, create and train attack model.
@@ -105,7 +111,7 @@ class ConfidenceVectorAttack(MIAWrapper):
         self.shadow_model_bundle = self.create_shadows(**training_args['shadow'])
         
         # create and train the attack model
-        self.attack_model = DefaultAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, self.atck_crt_args)
+        self.attack_model = DefaultAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, f_atck_args=self.atck_crt_args)
         self.attack_model.fit(**training_args['attack'])
         
         
@@ -142,7 +148,7 @@ class LabelOnlyAttack(MIAWrapper):
         self.shadow_model_bundle = self.create_shadows(**training_args['shadow'])
         
         # create and train the attack model
-        self.attack_model = LabelOnlyAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, self.atck_crt_args,
+        self.attack_model = LabelOnlyAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, f_atck_args=self.atck_crt_args,
                                                  augmentations_generator=augmentation_generator, aug_gen_args=aug_gen_args)
         self.attack_model.fit(**training_args['attack'])
         
@@ -181,5 +187,5 @@ class TopKConfidenceMaskingAttack(ConfidenceVectorAttack):
         self.shadow_model_bundle = self.create_shadows(**training_args['shadow'])
         
         # create and train the attack model
-        self.attack_model = TopKConfidenceMaskingAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, self.atck_crt_args)
+        self.attack_model = TopKConfidenceMaskingAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, f_atck_args=self.atck_crt_args)
         self.attack_model.fit(**training_args['attack'])

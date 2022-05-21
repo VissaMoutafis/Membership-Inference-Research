@@ -14,9 +14,9 @@ class TopKConfidenceMaskingModel():
         
     # prediction will return (confidence vector, classes) tuple 
     def predict(self, X):
-        y_all = self.model(X)
-        top_classes_idx = np.argsort(y_all, order='desc')[:, :self.top_k]
-        return np.take_along_axis(y_all, top_classes_idx), top_classes_idx
+        y_all = self.model(X).numpy()
+        top_classes_idx = np.argsort(y_all)[:, :(-1-self.top_k):-1]
+        return np.take_along_axis(y_all, top_classes_idx, axis=1), top_classes_idx
     
     def evaluate(self, **tf_eval_args):
         return self.model.evaluate(**tf_eval_args)
@@ -32,4 +32,4 @@ class TopKConfidenceMaskingAttackModel(DefaultAttackModel):
         ret = prob(y_conf.astype(np.float32)).numpy().reshape((-1, self.n_classes))
 
         # return an instance <true label, top-k pred labels, confidence vector, 0/1 D_target membership>
-        return np.concatenate((y.reshape((-1, 1)), y_labels.reshape(-1, 1), ret, y_member), axis=1)
+        return np.concatenate((y.reshape((-1, 1)), y_labels.reshape(-1, self.n_classes), ret, y_member), axis=1)

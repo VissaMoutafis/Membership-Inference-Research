@@ -76,7 +76,7 @@ class LabelOnlyAttackModel(DefaultAttackModel):
     def __init__(self, shadow_batch, n_classes, f_attack_builder, f_atck_args={}, augmentations_generator=augmented_queries, aug_gen_args={'r':2, 'd':1}):
         self.aug_gen_args = aug_gen_args
         self.augmentations_generator = augmentations_generator
-        super(LabelOnlyAttackModel, self).__init__(shadow_batch, n_classes, f_attack_builder, f_atck_args)
+        super(LabelOnlyAttackModel, self).__init__(shadow_batch, n_classes, f_attack_builder, f_atck_args=f_atck_args)
 
     """
     helper to prepare a batch of shadow data into a batch of attack data
