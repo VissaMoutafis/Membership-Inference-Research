@@ -4,16 +4,22 @@ from tensorflow.keras import layers, models, optimizers
 from mia_v2.utilities import *
 from mia_v2.attack_model import *
 
-class TopKConfidenceMaskingModel(models.Sequential):
-    def __init__(self, top_k):
-        super(TopKConfidenceMaskingModel, self)
+class TopKConfidenceMaskingModel():
+    def __init__(self, top_k, model_builder, **model_builder_args):
         self.top_k = top_k
+        self.model = model_builder(**model_builder_args)
     
+    def fit(self, X_train, y_train, **tf_fit_args):
+        return self.model.fit(X_train, y_train, **tf_fit_args)
+        
     # prediction will return (confidence vector, classes) tuple 
     def predict(self, X):
-        y_all = super(TopKConfidenceMaskingModel, self)(X)
+        y_all = self.model(X)
         top_classes_idx = np.argsort(y_all, order='desc')[:, :self.top_k]
         return np.take_along_axis(y_all, top_classes_idx), top_classes_idx
+    
+    def evaluate(self, **tf_eval_args):
+        return self.model.evaluate(**tf_eval_args)
     
     
 class TopKConfidenceMaskingAttackModel(DefaultAttackModel):

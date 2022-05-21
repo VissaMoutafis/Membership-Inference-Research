@@ -147,8 +147,7 @@ class LabelOnlyAttack(MIAWrapper):
         self.attack_model.fit(**training_args['attack'])
         
 
-
-class TopKConfidenceMaskingAttack(MIAWrapper):
+class TopKConfidenceMaskingAttack(ConfidenceVectorAttack):
     """
     Wrapper for confidence vector MIA.
     @param target_model: the model to perform attack to.
@@ -166,3 +165,21 @@ class TopKConfidenceMaskingAttack(MIAWrapper):
         # override n_classes definition
         self.n_classes = top_k
         
+    """
+    Generate shadow dataset, create and train shadows, generate attack model dataset, create and train attack model.
+    """
+    def perform_attack(self, **training_args):
+        if 'shadow' not in training_args:
+            training_args['shadow'] = {'epochs':50, 'batch_size':64}
+        if 'attack' not in training_args:
+            training_args['attack'] = {'epochs':50, 'batch_size':64}
+        self.trained = True 
+        # generate shadow datasets
+        self.D_shadows = generate_shadow_dataset(self.target_model, self.n_shadows, self.D_shadow_size, self.n_classes, self.attacker_dataset[0], self.attacker_dataset[1])
+
+        # create shadow models
+        self.shadow_model_bundle = self.create_shadows(**training_args['shadow'])
+        
+        # create and train the attack model
+        self.attack_model = TopKConfidenceMaskingAttackModel(self.shadow_model_bundle, self.n_classes, self.attack_model_creator, self.atck_crt_args)
+        self.attack_model.fit(**training_args['attack'])
