@@ -11,7 +11,7 @@ class TopKConfidenceMaskingModel(models.Sequential):
     
     # prediction will return (confidence vector, classes) tuple 
     def predict(self, X):
-        y_all = self(X)
+        y_all = super(TopKConfidenceMaskingModel, self)(X)
         top_classes_idx = np.argsort(y_all, order='desc')[:, :self.top_k]
         return np.take_along_axis(y_all, top_classes_idx), top_classes_idx
     
