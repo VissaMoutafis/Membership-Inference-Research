@@ -92,18 +92,33 @@ print(f"We have {len(train_images)} train instances and {len(test_images)} test 
 
 attacker_images, attacker_labels = (test_images, test_labels)
 
-N_SHADOWS = [1]#, 5, 10, 20]
-D_SHADOW= [2500, 5000]#, 7500]
-D_TARGET = [2500, 5000]#, 7500, 10000]
-TOP_K = [10, 8]#, 5, 2, 1]
+N_SHADOWS = [1, 5, 10, 15]
+D_SHADOW= [5000, 7500]
+D_TARGET = [2500, 7500, 10000]
+TOP_K = [10, 8, 5, 3]
 TEST_SET_SIZE = 0.3
 
+
+attacks = {}
+# train attacks for each case
+for top_k in TOP_K:
+  for attack_settings in product(N_SHADOWS, D_SHADOW):
+    # set up settings
+    n_shadows, d_shadow_size = attack_settings
+    attack = TopKConfidenceMaskingAttack(None, (train_images, train_labels), 
+                              (attacker_images, attacker_labels), top_k, 
+                              shadow_creator=create_shadow_model, shd_crt_args={'top_k':top_k, 'model_builder':f_shadow},
+                              attack_model_creator=cifar_10_f_attack_builder, atck_crt_args={'top_k':2*top_k},
+                              n_shadows=n_shadows, D_shadow_size=d_shadow_size, verbose=False)
+    attacks[(top_k, n_shadows, d_shadow_size)] = attack
+    es = EarlyStopping(monitor='val_loss', mode='min', min_delta=1e-4, patience=5)
+    attack.perform_attack(shadow={'epochs':100, 'batch_size':128, 'callbacks':[es]}, attack={'epochs':100, 'batch_size':128})
+    
 prec = []
 rec = []
 acc = []
 auc = []
 model_vuln = []
-
 config = {}
 for top_k in TOP_K:
   config['|y|'] = top_k
@@ -127,14 +142,11 @@ for top_k in TOP_K:
       n_shadows, d_shadow_size = attack_settings
       config['#Shadow-Models'] = n_shadows
       config['|D_shadow_i|'] = d_shadow_size
-      attack = TopKConfidenceMaskingAttack(target_model, (train_images, train_labels), 
-                                (attacker_images, attacker_labels), top_k, 
-                                shadow_creator=create_shadow_model, shd_crt_args={'top_k':top_k, 'model_builder':f_shadow},
-                                attack_model_creator=cifar_10_f_attack_builder, atck_crt_args={'top_k':2*top_k},
-                                n_shadows=n_shadows, D_shadow_size=d_shadow_size, verbose=False)
+      attack = attacks[(top_k, n_shadows, d_shadow_size)]
+      attack.target_model = target_model 
+      attack.target_dataset = (X_train, y_train)
 
-      es = EarlyStopping(monitor='val_loss', mode='min', min_delta=1e-4, patience=5)
-      attack.perform_attack(shadow={'epochs':100, 'batch_size':128, 'callbacks':[es]}, attack={'epochs':100, 'batch_size':128})
+      
       score_ = attack.evaluate_attack()
 
       
@@ -145,25 +157,9 @@ for top_k in TOP_K:
       prec.append({**config, 'Precision' : score_[0]['macro avg']['precision']
       })
 
-with open('MIAvsConfMasking-{datetime.today()}.json', 'w') as fp:
-  json.dumps({
+with open(f'MIAvsConfMasking-{datetime.today()}.json', 'w') as fp:
+  json.dump({
     'prec':prec,
     'rec':rec,
     'auc': auc
   }, fp)
-
-# exp = hip.Experiment.from_iterable(auc)
-# exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
-# exp.display()
-
-# exp = hip.Experiment.from_iterable(model_vuln)
-# exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
-# exp.display()
-
-# exp = hip.Experiment.from_iterable(prec)
-# exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
-# exp.display()
-
-# exp = hip.Experiment.from_iterable(rec)
-# exp.display_data(hip.Displays.PARALLEL_PLOT).update({'hide': ['uid'],})
-# exp.display()

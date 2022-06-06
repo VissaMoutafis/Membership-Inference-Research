@@ -52,7 +52,7 @@ class MIAWrapper():
     Warning: called inside the wrapper, not for outside usage. 
     """
     def create_shadows(self, **train_args):
-        shadow_models_batch = ShadowModelBatch(self.n_shadows, self.shadow_creator, self.atck_crt_args, model_type=self.SHADOW_MODEL_TYPE) # shadow model list
+        shadow_models_batch = ShadowModelBatch(self.n_shadows, self.shadow_creator, self.shd_crt_args, model_type=self.SHADOW_MODEL_TYPE) # shadow model list
         shadow_models_batch.fit_all(self.D_shadows, **train_args)
         return shadow_models_batch # return a list where every item is (model, acc), train-data, test-data
 
