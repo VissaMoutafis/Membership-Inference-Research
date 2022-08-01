@@ -40,6 +40,7 @@ class TfIgniter():
         self.torch_input_shape = torch_input_shape
         self.tf_input_shape = tf_input_shape
         self.device = device
+        self.privacy_engine = None
 
     def trainning_step(self, epoch_i, optimizer, criterion, memory_safe_dataloader, eval_loader, history=None):
         # 1 step of backprop with train/test error estimation
@@ -80,7 +81,7 @@ class TfIgniter():
                     losses.append(loss.item())
                     acc.append((torch.sum(y == y_pred.argmax(axis=1)).double()/len(_X)).item())
 
-                free_gpu_cache()
+                    free_gpu_cache()
 
         test_loss = sum(losses)/len(eval_loader)
         test_acc = sum(acc)/len(eval_loader)
@@ -148,7 +149,7 @@ class TfIgniter():
         
         optimizer = train_args['optimizer']['builder'](self.model.parameters(), **train_args['optimizer']['args'])
         criterion = train_args['criterion']()
-        if 'privacy' in train_args:
+        if 'privacy' in train_args and self.privacy_engine is None:
             history['privacy'] = {'epsilon':[]}
             self.privacy_engine = train_args['privacy']['engine']
             self.model, optimizer, trainloader = self.privacy_engine.make_private_with_epsilon(

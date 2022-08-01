@@ -14,8 +14,6 @@ from mia_v2.label_only import target_predict
 class BinaryNaivePerturbator:
     """
         Naive Augmentation Mechanism that uses Brute Force to produce all possible perturbations. 
-        Might not be the best option, since small seemingly insignificant changes in categorical features might result to a total label change. 
-        Latter is not a perturbation, by definition, since we do not retain the features correlations.
     """
     def __init__(self, dataset, bool_cols, label_col=None):
         self.original_dataset = dataset
