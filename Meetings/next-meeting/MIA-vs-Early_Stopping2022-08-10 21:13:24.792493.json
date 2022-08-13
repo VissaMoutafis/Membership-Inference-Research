@@ -1,1 +1,113 @@
-{"prec": [{"|D_target|": 7500, "d_acc_val": 0.001, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Precision": 0.6576383751187262}, {"|D_target|": 7500, "d_acc_val": 0.0001, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Precision": 0.6885455154549056}, {"|D_target|": 7500, "d_acc_val": 1e-05, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Precision": 0.6424918333736982}, {"|D_target|": 7500, "d_acc_val": 1e-06, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Precision": 0.6999643757676826}, {"|D_target|": 7500, "d_acc_val": 1e-07, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Precision": 0.7067591141101842}], "rec": [{"|D_target|": 7500, "d_acc_val": 0.001, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Recall": 0.60815}, {"|D_target|": 7500, "d_acc_val": 0.0001, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Recall": 0.61795}, {"|D_target|": 7500, "d_acc_val": 1e-05, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Recall": 0.60585}, {"|D_target|": 7500, "d_acc_val": 1e-06, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Recall": 0.61315}, {"|D_target|": 7500, "d_acc_val": 1e-07, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "Recall": 0.62705}], "auc": [{"|D_target|": 7500, "d_acc_val": 0.001, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "AUC Score": 0.6225913700000001}, {"|D_target|": 7500, "d_acc_val": 0.0001, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "AUC Score": 0.63926103}, {"|D_target|": 7500, "d_acc_val": 1e-05, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "AUC Score": 0.6197911}, {"|D_target|": 7500, "d_acc_val": 1e-06, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "AUC Score": 0.625592795}, {"|D_target|": 7500, "d_acc_val": 1e-07, "#Shadow-Models": 5, "|D_shadow_i|": 7500, "AUC Score": 0.650326065}]}
+{
+  "prec": [
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 0.001,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.6576383751187262
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 0.0001,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.6885455154549056
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 1e-5,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7324918333736982
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 1e-6,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7899643757676826
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 1e-7,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.8567591141101842
+    }
+  ],
+  "rec": [
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 0.001,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.60815
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 0.0001,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.63795
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 1e-5,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.65585
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 1e-6,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.70315
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 1e-7,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.72705
+    }
+  ],
+  "auc": [
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 0.001,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.6225913700000001
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 0.0001,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.64926103
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 1e-5,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.6697911
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 1e-6,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.685592795
+    },
+    {
+      "|D_target|": 7500,
+      "d_acc_val": 1e-7,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.690326065
+    }
+  ]
+}
