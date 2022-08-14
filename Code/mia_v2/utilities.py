@@ -4,8 +4,6 @@ import scipy.ndimage.interpolation as interpolation
 import matplotlib.pyplot as plt
 from tensorflow.keras import models, layers
 from sklearn.metrics import accuracy_score, log_loss
-from GPUtil import showUtilization as gpu_usage
-from numba import cuda
 import torch
 import gc 
 
