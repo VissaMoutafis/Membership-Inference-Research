@@ -17,6 +17,6 @@ The framework was an attempt to abstract the attack pipeline and it is not consi
 - [ ] Optimize code and shadow models training processing with multithreading
 - [ ] Upload working examples on various datasets such as CIFAR-10/100, MNIST and other categorical datasets.
 
-### Contributors
+## Contributors
 - Supervisor: [Kostas Chatzikokolakis](https://www.chatzi.org/)
 - External Consultant: [Nikos Galanis](https://www.linkedin.com/in/nikos-galanis/)
