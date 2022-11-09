@@ -24,12 +24,12 @@ from tensorflow.keras import datasets, layers, models
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
 
-from mia_v2.attack_model import *
-from mia_v2.label_only import *
-from mia_v2.shadow_models import *
-from mia_v2.utilities import *
-from mia_v2.confidence_masking import *
-from mia_v2.wrappers import ConfidenceVectorAttack, LabelOnlyAttack, TopKConfidenceMaskingAttack
+from mia.attack_model import *
+from mia.label_only import *
+from mia.shadow_models import *
+from mia.utilities import *
+from mia.confidence_masking import *
+from mia.wrappers import ConfidenceVectorAttack, LabelOnlyAttack, TopKConfidenceMaskingAttack
 from tqdm.notebook import tqdm
 import sys
 

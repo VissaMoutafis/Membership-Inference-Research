@@ -1,8 +1,8 @@
-from mia_v2.categorical_perturbator import augment_categorical_dataset
-from mia_v2.wrappers import *
-from mia_v2.utilities import *
-from mia_v2.attack_model import *
-from mia_v2.shadow_models import *
+from mia.categorical_perturbator import augment_categorical_dataset
+from mia.wrappers import *
+from mia.utilities import *
+from mia.attack_model import *
+from mia.shadow_models import *
 import numpy as np
 import pandas as pd
 import math
