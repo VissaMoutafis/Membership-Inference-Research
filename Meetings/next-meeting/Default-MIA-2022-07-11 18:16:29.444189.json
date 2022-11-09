@@ -1,0 +1,656 @@
+{
+  "prec": [
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.4945024474617575
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.5003050886995836
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.6349624263390641
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.7150073472842478
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.7643020890824859
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7460931056110183
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.7684030624398821
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.7696120297177921
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7598542666908235
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.7583537186529381
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.7728405065841994
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7691058371064741
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.49734562219349643
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.4934147120671842
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.6188643836625333
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.7138939555019599
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.7483012767822894
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7257167630843375
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.7489734876956806
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.7518146053840211
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7480253595471236
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.746231907317738
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.7549117239519486
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7537773194717701
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.4921786385516754
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.513823066725513
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.6129710742622336
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.6976554963380597
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.7343107539951786
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7161393571720744
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.7439336473288376
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.7336040308527214
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7268112918926436
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 2500,
+      "Precision": 0.732749803792444
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 5000,
+      "Precision": 0.7348205261856062
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 7500,
+      "Precision": 0.7334996507044687
+    }
+  ],
+  "rec": [
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.49485684896279786
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.5002571575518602
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.6253214469398252
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.6209497685582033
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.6946682667581004
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.6734099091376651
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.6758100462883594
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.7053831647522715
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.7050402880164581
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.6638950797188411
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.7069261100634322
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.7034116235213441
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.49745
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.49445
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.6071
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.612
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.6711
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.6476500000000001
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.65025
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.68025
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.6826
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.64635
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.68355
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.6774
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.49255000000000004
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.51215
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.59995
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.60155
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.65595
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.63125
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.63995
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.6617
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.6631
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 2500,
+      "Recall": 0.6321
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 5000,
+      "Recall": 0.6642
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 7500,
+      "Recall": 0.6615500000000001
+    }
+  ],
+  "auc": [
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.532102032780556
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.5563956254383501
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.7162374354089857
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.6721329827992326
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.7263979435155105
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.7297696774169466
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.705118086295191
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.7666023863409618
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.7640210970591867
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.7211811971288761
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.7401272088561068
+    },
+    {
+      "|D_target|": 2500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.7716919867684732
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.528216105
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.54759371
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.688789765
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.659510235
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.6961893750000001
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.69367388
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.672281185
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.7340454700000001
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.7360574400000001
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.6944712400000002
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.7034449049999999
+    },
+    {
+      "|D_target|": 5000,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.74340526
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.51833662
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.547122145
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 1,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.6748115100000001
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.63445447
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.677618895
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 5,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.6758234200000001
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.6624146049999999
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.715373205
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 10,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.7099651050000001
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 2500,
+      "AUC Score": 0.670928515
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 5000,
+      "AUC Score": 0.6858696099999999
+    },
+    {
+      "|D_target|": 7500,
+      "#Shadow-Models": 20,
+      "|D_shadow_i|": 7500,
+      "AUC Score": 0.717427505
+    }
+  ]
+}
